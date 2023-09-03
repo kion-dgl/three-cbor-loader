@@ -5,6 +5,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 let content;
 const scene = new THREE.Scene();
+const buttons = document.getElementsByClassName("btn");
 const camera = new THREE.PerspectiveCamera(
   45,
   window.innerWidth / window.innerHeight,
@@ -13,6 +14,7 @@ const camera = new THREE.PerspectiveCamera(
 );
 
 camera.position.set(-1.8, 0.6, 2.7);
+
 const render = () => {
   renderer.render(scene, camera);
 }
@@ -23,11 +25,17 @@ const onWindowResize = () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
+const reset = () => {
+  if (content) {
+    scene.remove(content);
+  }
+  buttons.forEach(btn => {
+    btn.removeAttribute("active");
+  })
+}
+
 const loader = new GLTFLoader().setPath("/gltf/");
-loader.load("DamagedHelmet.gltf", function (gltf) {
-  content = gltf.scene;
-  scene.add(gltf.scene);
-});
+
 
 // Set up Renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -63,4 +71,17 @@ scene.add(light);
 
 window.addEventListener("resize", onWindowResize);
 
+loader.load("DamagedHelmet.gltf", (gltf) => {
+  content = gltf.scene;
+  scene.add(gltf.scene);
+  buttons[0].classList.add("active");
+});
 
+buttons[0].addEventListener("click", () => {
+  reset();
+  loader.load("DamagedHelmet.gltf", (gltf) => {
+    content = gltf.scene;
+    scene.add(gltf.scene);
+    buttons[0].classList.add("active");
+  });
+})
