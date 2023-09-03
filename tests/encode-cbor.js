@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from 'fs'
 import { dataUriToBuffer } from 'data-uri-to-buffer'
 
 // Read a GLTF file with embedded buffers and parse as JSON
-const gltf = readFileSync('DamagedHelmet.gltf', 'utf8');
+const gltf = readFileSync('../public/gltf-embedded/DamagedHelmet_embed.gltf', 'utf8');
 const src = JSON.parse(gltf);
 
 // Convert buffers from base64 uri to binary
@@ -31,7 +31,7 @@ e.on("data", (buf) => {
 
 e.on("finish", () => {
     const encoded = Buffer.concat(dst)
-    writeFileSync('DamagedHelmet.cbor', encoded)
+    writeFileSync('../public/cbor/DamagedHelmet.cbor', encoded)
 })
 
 // Start encoding src JSON

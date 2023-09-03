@@ -12,6 +12,8 @@
     "vite": "^4.4.5"
   },
   "dependencies": {
+    "cbor": "^9.0.1",
+    "data-uri-to-buffer": "^5.0.1",
     "three": "^0.156.0"
   }
 }
