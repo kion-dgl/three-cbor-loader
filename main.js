@@ -1,6 +1,6 @@
 import "./style.css";
 import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { GLTFLoader } from "./GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 let content;
@@ -71,6 +71,7 @@ scene.add(light);
 
 window.addEventListener("resize", onWindowResize);
 
+// Load GLTF as a Preset
 loader.load("DamagedHelmet.gltf", (gltf) => {
   content = gltf.scene;
   scene.add(gltf.scene);
