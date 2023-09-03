@@ -12,7 +12,6 @@ const camera = new THREE.PerspectiveCamera(
   0.25,
   20
 );
-
 camera.position.set(-1.8, 0.6, 2.7);
 
 const render = () => {
@@ -29,13 +28,10 @@ const reset = () => {
   if (content) {
     scene.remove(content);
   }
-  buttons.forEach(btn => {
-    btn.removeAttribute("active");
-  })
+  for(let i = 0; i < buttons.length; i++){
+    buttons[i].classList.remove("active");
+  }
 }
-
-const loader = new GLTFLoader().setPath("/gltf/");
-
 
 // Set up Renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -71,18 +67,52 @@ scene.add(light);
 
 window.addEventListener("resize", onWindowResize);
 
-// Load GLTF as a Preset
-loader.load("DamagedHelmet.gltf", (gltf) => {
-  content = gltf.scene;
-  scene.add(gltf.scene);
-  buttons[0].classList.add("active");
-});
-
-buttons[0].addEventListener("click", () => {
+const loadGLTF = () => {
   reset();
+
+  const { pathname } = window.location;
+  const loader = new GLTFLoader().setPath(`${pathname}gltf/`);
+
+  // Load GLTF as a Preset
   loader.load("DamagedHelmet.gltf", (gltf) => {
     content = gltf.scene;
     scene.add(gltf.scene);
     buttons[0].classList.add("active");
   });
-})
+}
+
+const loadGLTFEmbedded = () => {
+  reset();
+
+  const { pathname } = window.location;
+  const loader = new GLTFLoader().setPath(`${pathname}gltf-embedded/`);
+
+  // Load GLTF as a Preset
+  loader.load("DamagedHelmet_embed.gltf", (gltf) => {
+    content = gltf.scene;
+    scene.add(gltf.scene);
+    buttons[1].classList.add("active");
+  });
+}
+
+const loadGLTFBinary = () => {
+  reset();
+
+  const { pathname } = window.location;
+  const loader = new GLTFLoader().setPath(`${pathname}glb/`);
+
+  // Load GLTF as a Preset
+  loader.load("DamagedHelmet.glb", (gltf) => {
+    content = gltf.scene;
+    scene.add(gltf.scene);
+    buttons[2].classList.add("active");
+  });
+}
+
+
+
+loadGLTF();
+
+buttons[0].addEventListener("click",loadGLTF)
+buttons[1].addEventListener("click",loadGLTFEmbedded)
+buttons[2].addEventListener("click",loadGLTFBinary)
