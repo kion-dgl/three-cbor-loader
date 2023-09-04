@@ -3140,18 +3140,26 @@ class GLTFParser {
 			sourceURI = parser.getDependency( 'bufferView', sourceDef.bufferView ).then( function ( bufferView ) {
 
 				isObjectURL = true;
+				console.log(bufferView)
 				const blob = new Blob( [ bufferView ], { type: sourceDef.mimeType } );
 				sourceURI = URL.createObjectURL( blob );
 				return sourceURI;
 
 			} );
 
+		} else if(sourceDef.data) {
+			
+			isObjectURL = true;
+			const blob = new Blob( [ sourceDef.data ], { type: "image/jpeg" } );
+			sourceURI = URL.createObjectURL( blob );
+				
 		} else if ( sourceDef.uri === undefined ) {
 
 			throw new Error( 'THREE.GLTFLoader: Image ' + sourceIndex + ' is missing URI and bufferView' );
 
 		}
 
+		console.log(sourceURI)
 		const promise = Promise.resolve( sourceURI ).then( function ( sourceURI ) {
 
 			return new Promise( function ( resolve, reject ) {

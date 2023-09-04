@@ -124,6 +124,13 @@ const loadCBOREmu = async ()=> {
     src.buffers[i].data = data;
   }
 
+  for(let i = 0; i < src.images.length; i++) {
+    const { uri } = src.images[i];
+    const req = await fetch(`${pathname}gltf/${uri}`);
+    const data = await req.arrayBuffer();
+    src.images[i].data = data;
+  }
+
   const loader = new GLTFLoader().setPath(`${pathname}gltf/`);
   loader.parse(src, `${pathname}gltf/`, (gltf) => {
     content = gltf.scene;
