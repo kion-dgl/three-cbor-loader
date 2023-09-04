@@ -143,51 +143,13 @@ const loadCBOREmu = async () => {
 
 const loadCBOR = async () => {
 
-  reset();
   const { pathname } = window.location;
   const url = `${pathname}cbor/DamagedHelmet.cbor`
   const get = await fetch(url);
   const buffer = await get.arrayBuffer();
   const src = decode(buffer);
 
-  for (let i = 0; i < src.buffers.length; i++) {
-    const { data } = src.buffers[i];
-    src.buffers[i].data = data.buffer;
-    console.log(data);
-    console.log(data.buffer);
-
-    const { uri } = src.buffers[i];
-    const req = await fetch(`${pathname}gltf/${uri}`);
-    const buffer = await req.arrayBuffer();
-    const list = new Uint8Array(buffer);
-
-    console.log(buffer);
-    console.log(data.length);
-    console.log(list.length);
-
-    for(let i = 0; i < data.length; i++) {
-      if(data[i] === list[i]) {
-        continue;
-      }
-      console.log(i);
-      console.log(i / list.length);
-      break;
-    }
-    console.log("Same");
-
-    // src.buffers[i].data = buffer;
-
-  }
-
-  for (let i = 0; i < src.images.length; i++) {
-    const { data } = src.images[i];
-    src.images[i].data = data.buffer;
-
-    const { uri } = src.images[i];
-    const req = await fetch(`${pathname}gltf/${uri}`);
-    src.images[i].data = await req.arrayBuffer();
-  }
-
+  reset();
   const loader = new GLTFLoader();
   loader.parse(src, null, (gltf) => {
     content = gltf.scene;

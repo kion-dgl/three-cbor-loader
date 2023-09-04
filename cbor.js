@@ -183,7 +183,7 @@ function encode(value) {
 }
 
 function decode(data, tagger, simpleValue) {
-  var dataView = new DataView(data);
+  const dataView = new DataView(data);
   var offset = 0;
 
   if (typeof tagger !== "function")
@@ -195,9 +195,16 @@ function decode(data, tagger, simpleValue) {
     offset += length;
     return value;
   }
+
   function readArrayBuffer(length) {
-    return commitRead(length, new Uint8Array(data, offset, length));
+    const array = [];
+    for(let i = 0; i < length; i++) {
+      array.push(dataView.getUint8(offset + i))
+    }
+    const value = new Uint8Array(array);
+    return commitRead(length, value.buffer);
   }
+
   function readFloat16() {
     var tempArrayBuffer = new ArrayBuffer(4);
     var tempDataView = new DataView(tempArrayBuffer);
