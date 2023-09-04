@@ -2863,6 +2863,11 @@ class GLTFParser {
 
 		}
 
+		// If CBOR return the array buffer that is directly included in the buffer definition
+		if(bufferDef.data) {
+			return Promise.resolve( bufferDef.data );
+		}
+
 		const options = this.options;
 
 		return new Promise( function ( resolve, reject ) {

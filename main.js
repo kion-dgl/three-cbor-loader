@@ -109,10 +109,33 @@ const loadGLTFBinary = () => {
   });
 }
 
+const loadCBOREmu = async ()=> {
 
+  reset();
+  const { pathname } = window.location;
+  const url = `${pathname}gltf/DamagedHelmet.gltf`
+  const get = await fetch(url);
+  const src = await get.json();
+
+  for(let i = 0; i < src.buffers.length; i++) {
+    const { uri } = src.buffers[i];
+    const req = await fetch(`${pathname}gltf/${uri}`);
+    const data = await req.arrayBuffer();
+    src.buffers[i].data = data;
+  }
+
+  const loader = new GLTFLoader().setPath(`${pathname}gltf/`);
+  loader.parse(src, `${pathname}gltf/`, (gltf) => {
+    content = gltf.scene;
+    scene.add(gltf.scene);
+    buttons[3].classList.add("active");
+  });
+
+}
 
 loadGLTF();
 
 buttons[0].addEventListener("click",loadGLTF)
 buttons[1].addEventListener("click",loadGLTFEmbedded)
 buttons[2].addEventListener("click",loadGLTFBinary)
+buttons[3].addEventListener("click",loadCBOREmu)
