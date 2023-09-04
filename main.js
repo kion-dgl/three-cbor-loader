@@ -2,6 +2,7 @@ import "./style.css";
 import * as THREE from "three";
 import { GLTFLoader } from "./GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { decode } from './cbor'
 
 let content;
 const scene = new THREE.Scene();
@@ -28,7 +29,7 @@ const reset = () => {
   if (content) {
     scene.remove(content);
   }
-  for(let i = 0; i < buttons.length; i++){
+  for (let i = 0; i < buttons.length; i++) {
     buttons[i].classList.remove("active");
   }
 }
@@ -109,7 +110,7 @@ const loadGLTFBinary = () => {
   });
 }
 
-const loadCBOREmu = async ()=> {
+const loadCBOREmu = async () => {
 
   reset();
   const { pathname } = window.location;
@@ -117,22 +118,22 @@ const loadCBOREmu = async ()=> {
   const get = await fetch(url);
   const src = await get.json();
 
-  for(let i = 0; i < src.buffers.length; i++) {
+  for (let i = 0; i < src.buffers.length; i++) {
     const { uri } = src.buffers[i];
     const req = await fetch(`${pathname}gltf/${uri}`);
     const data = await req.arrayBuffer();
     src.buffers[i].data = data;
   }
 
-  for(let i = 0; i < src.images.length; i++) {
+  for (let i = 0; i < src.images.length; i++) {
     const { uri } = src.images[i];
     const req = await fetch(`${pathname}gltf/${uri}`);
     const data = await req.arrayBuffer();
     src.images[i].data = data;
   }
 
-  const loader = new GLTFLoader().setPath(`${pathname}gltf/`);
-  loader.parse(src, `${pathname}gltf/`, (gltf) => {
+  const loader = new GLTFLoader();
+  loader.parse(src, null, (gltf) => {
     content = gltf.scene;
     scene.add(gltf.scene);
     buttons[3].classList.add("active");
@@ -140,9 +141,38 @@ const loadCBOREmu = async ()=> {
 
 }
 
+const loadCBOR = async () => {
+
+  reset();
+  const { pathname } = window.location;
+  const url = `${pathname}cbor/DamagedHelmet.cbor`
+  const get = await fetch(url);
+  const buffer = await get.arrayBuffer();
+  const src = decode(buffer);
+
+  for (let i = 0; i < src.buffers.length; i++) {
+    const { data } = src.buffers[i];
+    src.buffers[i].data = data.buffer;
+  }
+
+  for (let i = 0; i < src.images.length; i++) {
+    const { data } = src.images[i];
+    src.images[i].data = data.buffer;
+  }
+
+  const loader = new GLTFLoader();
+  loader.parse(src, null, (gltf) => {
+    content = gltf.scene;
+    scene.add(gltf.scene);
+    buttons[4].classList.add("active");
+  });
+
+}
+
 loadGLTF();
 
-buttons[0].addEventListener("click",loadGLTF)
-buttons[1].addEventListener("click",loadGLTFEmbedded)
-buttons[2].addEventListener("click",loadGLTFBinary)
-buttons[3].addEventListener("click",loadCBOREmu)
+buttons[0].addEventListener("click", loadGLTF)
+buttons[1].addEventListener("click", loadGLTFEmbedded)
+buttons[2].addEventListener("click", loadGLTFBinary)
+buttons[3].addEventListener("click", loadCBOREmu)
+buttons[4].addEventListener("click", loadCBOR)

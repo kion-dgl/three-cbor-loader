@@ -3140,7 +3140,6 @@ class GLTFParser {
 			sourceURI = parser.getDependency( 'bufferView', sourceDef.bufferView ).then( function ( bufferView ) {
 
 				isObjectURL = true;
-				console.log(bufferView)
 				const blob = new Blob( [ bufferView ], { type: sourceDef.mimeType } );
 				sourceURI = URL.createObjectURL( blob );
 				return sourceURI;
@@ -3159,7 +3158,6 @@ class GLTFParser {
 
 		}
 
-		console.log(sourceURI)
 		const promise = Promise.resolve( sourceURI ).then( function ( sourceURI ) {
 
 			return new Promise( function ( resolve, reject ) {
